@@ -8,7 +8,7 @@ Board::Board(std::map<std::pair<int, int>, bool> &m, bool red_turn): red_turn(re
         init_map(m);
 }
 
-Board::Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn): red_turn(red_turn)
+Board::Board(std::map<std::pair<int, int>, enum colour> &m, bool red_turn): red_turn(red_turn)
 {
         init_map(m);
 }
@@ -26,7 +26,7 @@ void Board::init_map(std::map<std::pair<int, int>, bool> &m)
         }
 }
 
-void Board::init_map(std::map<std::pair<int, int>, enum player> &m)
+void Board::init_map(std::map<std::pair<int, int>, enum colour> &m)
 {
         for (auto &&[coord, colour] : m) {
                 if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
@@ -72,36 +72,26 @@ enum state Board::state() const
         return (yellow | red).all() ? DRAW : PLAYING;
 }
 
-void Board::print() const
+enum colour Board::turn() const
 {
-        int x;
-        std::cout << "\n   ---------------------------\n";
-        for (int i = N_ROW - 1; i >= 0; i--) {
-                for (int j = 0; j < N_COL; j++) {
-                        x = i + N_ROW * j;
+        return red_turn ? RED : YELLOW;
+}
 
-                        if (j == 0) {
-                                std::cout << i << " | ";
-                        }
+std::vector<std::vector<enum colour>> Board::current()
+{
+        std::vector<std::vector<enum colour>> v {N_COL, std::vector<enum colour> {N_ROW, BLANK}};
+        int col, row;
+        for (col = 0; col < N_COL; col++) {
+                for (row = 0; row < N_ROW; row++) {
+                        if (yellow[N_ROW * col + row])
+                                v[col][row] = YELLOW;
 
-                        if (yellow[x]) {
-                                std::cout << "y | ";
-                        } else if (red[x]) {
-                                std::cout << "r | ";
-                        } else {
-                                std::cout << "  | ";
-                        }
-                }
-                
-                std::cout << '\n';
-                // std::cout << "   ---------------------------\n";
-
-                if (i == 0) {
-                        std::cout << "   ---------------------------\n";
-                        std::cout << "    0   1   2   3   4   5   6\n";
+                        else if (red[N_ROW * col + row])
+                                v[col][row] = RED;
                 }
         }
-        std::cout << "\n" << std::endl;
+
+        return v;
 }
 
 std::vector<std::bitset<N_BITS>> Board::generate_wins()

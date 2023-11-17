@@ -1,38 +1,15 @@
 #include "../src/board.hpp"
+#include "../src/board_io.hpp"
 #include <map>
 #include <iostream>
 
 using namespace std;
 
-void print_state(Board &b)
-{
-        switch (b.state()) {
-        case WIN_YELLOW:
-                cout << "YELLOW WON !!\n";
-                break;
-
-        case WIN_RED:
-                cout << "RED WON !!\n";
-                break;
-
-        case DRAW:
-                cout << "DRAW !!\n";
-                break;
-
-        case PLAYING:
-                cout << "GAME IN PROGRESS !!\n";
-                break;
-
-        default:
-                cout << "ERROR STATE !!\n";
-        }
-}
-
 void test_diagonal_yellow_win()
 {
         cout << "test_diagonal_yellow_win\n" << endl;
 
-        std::map<std::pair<int, int>, enum player> m;
+        std::map<std::pair<int, int>, enum colour> m;
 
         m[std::make_pair(0, 0)] = YELLOW;
 
@@ -49,15 +26,16 @@ void test_diagonal_yellow_win()
         m[std::make_pair(3, 3)] = YELLOW;
 
         Board b {m};
-        b.print();
-        print_state(b);
+
+        board_io::print_board(b);
+        board_io::print_state(b);
 }
 
 void test_vertical_red_win()
 {
         cout << "test_vertical_red_win\n" << endl;
 
-        map<pair<int, int>, enum player> m;
+        map<pair<int, int>, enum colour> m;
 
         m[make_pair(0, 0)] = YELLOW;
         m[make_pair(0, 1)] = YELLOW;
@@ -69,8 +47,9 @@ void test_vertical_red_win()
         m[make_pair(0, 6)] = RED;
 
         Board b {m};
-        b.print();
-        print_state(b);
+
+        board_io::print_board(b);
+        board_io::print_state(b);
 }
 
 void test_draw()
@@ -78,7 +57,7 @@ void test_draw()
         cout << "test_draw" << endl;
 
         bool p {false};
-        map<pair<int, int>, enum player> m;
+        map<pair<int, int>, enum colour> m;
         int col, row;
         for (col = 0; col < 3; col++) {
                 for (row = 0; row < N_ROW; row++) {
@@ -100,16 +79,14 @@ void test_draw()
         }
 
         Board b {m};
-        b.print();
-        print_state(b);
+
+        board_io::print_board(b);
+        board_io::print_state(b);
 }
 
 int main()
 {
-        // test_vertical_red_win();
-        // test_diagonal_yellow_win();
-        // test_draw();
-
-        Board b;
-        cout << sizeof (Board) << endl;
+        test_diagonal_yellow_win();
+        test_vertical_red_win();
+        test_draw();
 }

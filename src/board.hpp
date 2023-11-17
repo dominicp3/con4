@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-enum player {YELLOW, RED, BLANK};
+enum colour {YELLOW, RED, BLANK};
 enum state {PLAYING, DRAW, WIN_YELLOW, WIN_RED};
 
 static constexpr int N_COL = 7;
@@ -16,12 +16,13 @@ class Board {
 public:
         Board(bool red_turn = false);
         Board(std::map<std::pair<int, int>, bool> &m, bool red_turn = false);
-        Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn = false);
+        Board(std::map<std::pair<int, int>, enum colour> &m, bool red_turn = false);
 
         bool play(int column);
         enum state state() const;
+        enum colour turn() const;
 
-        void print() const;
+        std::vector<std::vector<enum colour>> current();
 
 private:
         static const std::vector<std::bitset<N_BITS>> wins;
@@ -35,7 +36,7 @@ private:
         static void print_(std::bitset<N_BITS> &b);
 
         void init_map(std::map<std::pair<int, int>, bool> &m);
-        void init_map(std::map<std::pair<int, int>, enum player> &m);
+        void init_map(std::map<std::pair<int, int>, enum colour> &m);
 
         std::bitset<N_BITS> yellow;
         std::bitset<N_BITS> red;
