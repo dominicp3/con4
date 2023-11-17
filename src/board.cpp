@@ -1,16 +1,29 @@
 #include "board.hpp"
 #include <iostream>
 
-Board::Board() {}
+Board::Board(bool red_turn): red_turn(red_turn) {}
 
-Board::Board(std::map<std::pair<int, int>, enum player> &m)
+Board::Board(std::map<std::pair<int, int>, bool> &m, bool red_turn): red_turn(red_turn)
 {
         init_map(m);
 }
 
-Board::Board(std::map<std::pair<int, int>, enum player> &m, enum player colour): turn(colour)
+Board::Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn): red_turn(red_turn)
 {
         init_map(m);
+}
+
+void Board::init_map(std::map<std::pair<int, int>, bool> &m)
+{
+        for (auto &&[coord, player_red] : m) {
+                if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
+                        continue;
+
+                if (player_red)
+                        red.set(N_ROW * coord.first + coord.second);
+                else
+                        yellow.set(N_ROW * coord.first + coord.second);
+        }
 }
 
 void Board::init_map(std::map<std::pair<int, int>, enum player> &m)
@@ -29,23 +42,10 @@ void Board::init_map(std::map<std::pair<int, int>, enum player> &m)
 
 bool Board::play(int column)
 {
-        if (!play(column, turn))
-                return false;
-
-        turn = (turn == YELLOW) ? RED : YELLOW;
-        return true;
-}
-
-bool Board::play(int column, enum player colour)
-{
         if (column < 0 || column >= N_COL)
                 return false;
-        
-        if (colour != YELLOW && colour != RED)
-                return false;
 
-        char i;
-        int count;
+        int i, count;
         std::bitset<N_BITS> &&yellow_red = yellow | red;
 
         for (i = N_ROW * column, count = 0; yellow_red.test(i); i++, count++);
@@ -53,16 +53,9 @@ bool Board::play(int column, enum player colour)
         if (count >= N_ROW)
                 return false;
 
-        switch (colour) {
-        case YELLOW:
-                yellow.set(i);
-                break;
-        case RED:
-                red.set(i);
-                break;
-        default:;
-        }
+        red_turn ? red.set(i) : yellow.set(i);
 
+        red_turn = !red_turn;
         return true;
 }
 

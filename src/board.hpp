@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-enum player {BLANK, YELLOW, RED};
+enum player {YELLOW, RED, BLANK};
 enum state {PLAYING, DRAW, WIN_YELLOW, WIN_RED};
 
 static constexpr int N_COL = 7;
@@ -14,12 +14,11 @@ static constexpr int N_BITS = N_COL * N_ROW;
 
 class Board {
 public:
-        Board();
-        Board(std::map<std::pair<int, int>, enum player> &m);
-        Board(std::map<std::pair<int, int>, enum player> &m, enum player colour);
+        Board(bool red_turn = false);
+        Board(std::map<std::pair<int, int>, bool> &m, bool red_turn = false);
+        Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn = false);
 
         bool play(int column);
-        bool play(int column, enum player colour);
 
         enum state state() const;
 
@@ -38,12 +37,13 @@ private:
         static void diagonal_neg(std::vector<std::bitset<N_BITS>> &v);
         static void print_(std::bitset<N_BITS> &b);
 
+        void init_map(std::map<std::pair<int, int>, bool> &m);
         void init_map(std::map<std::pair<int, int>, enum player> &m);
 
         std::bitset<N_BITS> yellow;
         std::bitset<N_BITS> red;
 
-        enum player turn = YELLOW;
+        bool red_turn;
 };
 
 #endif /* BOARD_H */

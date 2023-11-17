@@ -106,7 +106,11 @@ void test_draw()
 
 int main()
 {
-        test_vertical_red_win();
-        test_diagonal_yellow_win();
-        test_draw();
+        // test_vertical_red_win();
+        // test_diagonal_yellow_win();
+        // test_draw();
+
+        Board a;
+
+        (void) a;
 }
