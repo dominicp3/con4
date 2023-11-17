@@ -2,3 +2,4 @@ test/foo.cpp
 obj
 bin
 .vscode
+.DS_Store
