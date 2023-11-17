@@ -77,7 +77,7 @@ enum colour Board::turn() const
         return red_turn ? RED : YELLOW;
 }
 
-std::vector<std::vector<enum colour>> Board::current()
+std::vector<std::vector<enum colour>> Board::current() const
 {
         std::vector<std::vector<enum colour>> v {N_COL, std::vector<enum colour> {N_ROW, BLANK}};
         int col, row;

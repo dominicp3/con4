@@ -22,7 +22,7 @@ public:
         enum state state() const;
         enum colour turn() const;
 
-        std::vector<std::vector<enum colour>> current();
+        std::vector<std::vector<enum colour>> current() const;
 
 private:
         static const std::vector<std::bitset<N_BITS>> wins;
