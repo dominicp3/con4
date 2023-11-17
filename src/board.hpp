@@ -21,9 +21,7 @@ public:
         bool play(int column);
 
         enum state state() const;
-
         bool valid() const;
-
         void print() const;
 
 private:
