@@ -15,11 +15,11 @@ Board::Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn): red_
 
 void Board::init_map(std::map<std::pair<int, int>, bool> &m)
 {
-        for (auto &&[coord, player_red] : m) {
+        for (auto &&[coord, _red] : m) {
                 if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
                         continue;
 
-                if (player_red)
+                if (_red)
                         red.set(N_ROW * coord.first + coord.second);
                 else
                         yellow.set(N_ROW * coord.first + coord.second);
@@ -54,8 +54,8 @@ bool Board::play(int column)
                 return false;
 
         red_turn ? red.set(i) : yellow.set(i);
-
         red_turn = !red_turn;
+
         return true;
 }
 
@@ -70,11 +70,6 @@ enum state Board::state() const
         }
 
         return (yellow | red).all() ? DRAW : PLAYING;
-}
-
-bool Board::valid() const
-{
-        return !(yellow & red).any();
 }
 
 void Board::print() const

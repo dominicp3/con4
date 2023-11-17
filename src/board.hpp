@@ -19,9 +19,8 @@ public:
         Board(std::map<std::pair<int, int>, enum player> &m, bool red_turn = false);
 
         bool play(int column);
-
         enum state state() const;
-        bool valid() const;
+
         void print() const;
 
 private:
