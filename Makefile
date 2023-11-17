@@ -2,7 +2,7 @@ CXX=clang++
 CXXFLAGS=-std=c++20 -Wall -Wextra -pedantic -Werror -Werror=vla
 DEBUG=-g -fsanitize=address
 
-.PHONY: clean obj/ bin/
+.PHONY: clean
 
 bin/main: test/main.cpp obj/board.o bin/
 	$(CXX) $(CXXFLAGS) $(DEBUG) -o $@ $< $(filter obj/%.o, $^)

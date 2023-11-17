@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void print_outcome(Board &b)
+void print_state(Board &b)
 {
         switch (b.state()) {
         case WIN_YELLOW:
@@ -50,7 +50,7 @@ void test_diagonal_yellow_win()
 
         Board b {m};
         b.print();
-        print_outcome(b);
+        print_state(b);
 }
 
 void test_vertical_red_win()
@@ -70,7 +70,7 @@ void test_vertical_red_win()
 
         Board b {m};
         b.print();
-        print_outcome(b);
+        print_state(b);
 }
 
 void test_draw()
@@ -101,7 +101,7 @@ void test_draw()
 
         Board b {m};
         b.print();
-        print_outcome(b);
+        print_state(b);
 }
 
 int main()
