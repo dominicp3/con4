@@ -8,7 +8,7 @@ Board::Board(std::map<std::pair<int, int>, bool> &m, bool red_turn): red_turn(re
         init_map(m);
 }
 
-Board::Board(std::map<std::pair<int, int>, enum colour> &m, bool red_turn): red_turn(red_turn)
+Board::Board(std::map<std::pair<int, int>, COLOUR> &m, bool red_turn): red_turn(red_turn)
 {
         init_map(m);
 }
@@ -26,7 +26,7 @@ void Board::init_map(std::map<std::pair<int, int>, bool> &m)
         }
 }
 
-void Board::init_map(std::map<std::pair<int, int>, enum colour> &m)
+void Board::init_map(std::map<std::pair<int, int>, COLOUR> &m)
 {
         for (auto &&[coord, colour] : m) {
                 if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
@@ -59,7 +59,7 @@ bool Board::play(int column)
         return true;
 }
 
-enum state Board::state() const
+STATE Board::state() const
 {
         for (auto &b : wins) {
                 if ((b & yellow) == b)
@@ -72,14 +72,28 @@ enum state Board::state() const
         return (yellow | red).all() ? DRAW : PLAYING;
 }
 
-enum colour Board::turn() const
+COLOUR Board::turn() const
 {
         return red_turn ? RED : YELLOW;
 }
 
-std::vector<std::vector<enum colour>> Board::current() const
+COLOUR Board::cell(int col, int row) const
 {
-        std::vector<std::vector<enum colour>> v {N_COL, std::vector<enum colour> {N_ROW, BLANK}};
+        if (col < 0 || col >= N_COL || row < 0 || row >= N_ROW)
+                return COLOUR_ERROR;
+        
+        if (yellow[N_ROW * col + row])
+                return YELLOW;
+
+        if (red[N_ROW * col + row])
+                return RED;
+
+        return BLANK;
+}       
+
+std::vector<std::vector<COLOUR>> Board::current() const
+{
+        std::vector<std::vector<COLOUR>> v {N_COL, std::vector<COLOUR> {N_ROW, BLANK}};
         int col, row;
         for (col = 0; col < N_COL; col++) {
                 for (row = 0; row < N_ROW; row++) {
@@ -94,73 +108,101 @@ std::vector<std::vector<enum colour>> Board::current() const
         return v;
 }
 
-std::vector<std::bitset<N_BITS>> Board::generate_wins()
+std::vector<std::bitset<N_BITS>> Board::init_wins()
 {
         std::vector<std::bitset<N_BITS>> v;
 
-        vertical(v);
-        horizontal(v);
-        diagonal_pos(v);
-        diagonal_neg(v);
+        bitboard::vertical(v);
+        bitboard::horizontal(v);
+        bitboard::diagonal_pos(v);
+        bitboard::diagonal_neg(v);
 
         return v;
 }
 
-void Board::vertical(std::vector<std::bitset<N_BITS>> &v)
+size_t bitboard::vertical(std::vector<std::bitset<N_BITS>> &v, int n)
 {
+        if (n <= 0)
+                return 0;
+
         int col, row, i;
+        size_t count {0};
         for (col = 0; col < N_COL; col++) {
-                for (row = 0; row + 3 < N_ROW; row++) {
+                for (row = 0; row + (n - 1) < N_ROW; row++) {
                         std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
-                        for (i = 0; i < 4; i++) 
+                        for (i = 0; i < n; i++) 
                                 b.set(N_ROW * col + row + i);
                         v.push_back(b);
+                        count++;
                 }
         }
+
+        return count;
 }
 
-void Board::horizontal(std::vector<std::bitset<N_BITS>> &v)
+size_t bitboard::horizontal(std::vector<std::bitset<N_BITS>> &v, int n)
 {
+        if (n <= 0)
+                return 0;
+
         int col, row, i;
-        for (col = 0; col + 3 < N_COL; col++) {
+        size_t count {0};
+        for (col = 0; col + (n - 1) < N_COL; col++) {
                 for (row = 0; row < N_ROW; row++) {
                         std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
-                        for (i = 0; i < 4; i++)
+                        for (i = 0; i < n; i++)
                                 b.set(N_ROW * col + row + N_ROW * i);
                         v.push_back(b);
+                        count++;
                 }
         }
+
+        return count;
 }
 
-void Board::diagonal_pos(std::vector<std::bitset<N_BITS>> &v)
+size_t bitboard::diagonal_pos(std::vector<std::bitset<N_BITS>> &v, int n)
 {
+        if (n <= 0)
+                return 0;
+
         int col, row, i;
-        for (col = 0; col + 3 < N_COL; col++) {
-                for (row = 0; row + 3 < N_ROW; row++) {
+        size_t count {0};
+        for (col = 0; col + (n - 1) < N_COL; col++) {
+                for (row = 0; row + (n - 1) < N_ROW; row++) {
                         std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
-                        for (i = 0; i < 4; i++) {
+                        for (i = 0; i < n; i++) {
                                 b.set(N_ROW * col + row + (N_ROW + 1) * i);
                         }
                         
                         v.push_back(b);
+                        count++;
                 }
         }
+
+        return count;
 }
 
-void Board::diagonal_neg(std::vector<std::bitset<N_BITS>> &v)
+size_t bitboard::diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n)
 {
+        if (n <= 0)
+                return 0;
+
         int col, row, i;
-        for (col = 0; col + 3 < N_COL; col++) {
-                for (row = N_ROW - 1; row - 3 >= 0; row--) {
+        size_t count {0};
+        for (col = 0; col + (n - 1) < N_COL; col++) {
+                for (row = N_ROW - 1; row - (n - 1) >= 0; row--) {
                         std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
-                        for (i = 0; i < 4; i++)
+                        for (i = 0; i < n; i++)
                                 b.set(N_ROW * col + row + (N_ROW - 1) * i);
                         v.push_back(b);
+                        count++;
                 }
         }
+
+        return count;
 }
 
-void Board::print_(std::bitset<N_BITS> &b)
+void bitboard::print(std::bitset<N_BITS> &b)
 {
         int x;
         for (int i = N_ROW - 1; i >= 0; i--) {
@@ -178,4 +220,14 @@ void Board::print_(std::bitset<N_BITS> &b)
         std::cout << '\n';
 }
 
-const std::vector<std::bitset<N_BITS>> Board::wins {Board::generate_wins()};
+std::bitset<N_BITS> Board::yellow_bitset() const
+{
+        return yellow;
+}
+
+std::bitset<N_BITS> Board::red_bitset() const
+{
+        return red;
+}
+
+const std::vector<std::bitset<N_BITS>> Board::wins {Board::init_wins()};
