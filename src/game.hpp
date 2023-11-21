@@ -2,7 +2,7 @@
 #define GAME_H
 
 namespace game {
-        void game();
+        void game(bool cpu);
 }
 
 

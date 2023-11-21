@@ -2,18 +2,36 @@
 #define COMPUTER_H
 
 #include "board.hpp"
-#include <map>
 #include <vector>
+#include <memory>
+#include <map>
+#include <array>
+#include <tuple>
+
+static constexpr int i_min {std::numeric_limits<int>::min()};
+static constexpr int i_max {std::numeric_limits<int>::max()};
 
 enum ORIENTATION {VERTICAL, HORIZONTAL, DIAGONAL_POS, DIAGONAL_NEG, ORIENTATION_ERROR};
 
 class Computer {
 public:
-        static int utility(Board &board);
-        static int evaluation(Board &board, COLOUR colour);
+        Computer() = default;
+        Computer(int depth_stop);
+        Computer(COLOUR maximising_colour);
+        Computer(int depth_stop, COLOUR maximising_colour);
 
-        static std::vector<Board> actions(Board &board);
-        static int move(Board &board, int alpha, int beta, int depth, bool maximiser);
+        int utility(const Board &board);
+        int evaluation(const Board &board, COLOUR colour);
+
+        COLOUR maximiser() const;
+        COLOUR minimiser() const;
+
+        std::vector<std::tuple<Board, int, STATE>> actions(const Board &board);
+        int next_move(const Board &board, int alpha, int beta, int depth, bool maximiser);
+        Board next_board(const Board &board);
+
+        static int next_move_count;
+        static int eval_count;
 
 private:
         struct BoardInRow {
@@ -24,8 +42,16 @@ private:
                 bool two_in_row = false;
         };
 
+        int allocate_points(COLOUR colour, COLOUR first, int row, bool two_in_row) const;
+
+        static const std::array<int, N_COL> indices;
+        static std::array<int, N_COL> init_indices();
+
         static const std::vector<BoardInRow> in_row_2_3;
         static std::vector<BoardInRow> init_in_row_2_3();
+
+        const int depth_stop = 9;
+        const bool red_is_maximiser = RED;
 };
 
 #endif /* COMPUTER_H */

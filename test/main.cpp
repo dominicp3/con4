@@ -1,5 +1,5 @@
 #include "../src/board.hpp"
-#include "../src/board_io.hpp"
+#include "../src/misc_io.hpp"
 #include "../src/game.hpp"
 #include "../src/computer.hpp"
 #include <map>
@@ -7,10 +7,8 @@
 
 using namespace std;
 
-void test_utility()
+Board make_board()
 {
-        cout << "test_utility\n" << endl;
-
         std::map<std::pair<int, int>, COLOUR> m;
 
         m[std::make_pair(0, 0)] = YELLOW;
@@ -29,14 +27,24 @@ void test_utility()
         m[std::make_pair(4, 0)] = RED;
         m[std::make_pair(4, 1)] = RED;
 
-        Board b {m};
+        return Board {m};
+}
 
+void test_utility()
+{
+        cout << "test_utility\n" << endl;
+
+        Board b {make_board()};
         board_io::print_board(b);
-        board_io::print_state(b);
 
-        auto x = Computer::evaluation(b, RED);
+        Computer c(RED);
+        board_io::print_turn(b);
 
-        cout << "Evaluation: " << x << endl;
+        // [2, 6, 5, 0, 4, 1, 3] <- worst performing indices
+        Board next {c.next_board(b)};
+        board_io::print_board(next);
+        cout << "next_move_count = " << Computer::next_move_count << '\n';
+        cout << "eval_count = " << Computer::eval_count << '\n';
 }
 
 void test_diagonal_yellow_win()
@@ -133,7 +141,6 @@ void test_generate_boards()
 
 int main()
 {
+        // game::game(false);
         test_utility();
-        Computer c;
-        cout << sizeof c << endl;
 }
