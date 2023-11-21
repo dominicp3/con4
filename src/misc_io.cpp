@@ -13,10 +13,10 @@ namespace board_io
                         for (int j = 0; j < N_COL; j++) {
                                 switch (arr[j][i]) {
                                 case YELLOW:
-                                        c = 'X';
+                                        c = 'Y';
                                         break;
                                 case RED:
-                                        c = 'O'; break;
+                                        c = 'R'; break;
                                 case BLANK:
                                         c = ' '; break;
                                 default:;

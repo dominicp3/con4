@@ -13,82 +13,88 @@ Computer::Computer(int depth_stop, COLOUR maximising_colour): depth_stop(depth_s
 
 Board Computer::next_board(const Board &board)
 {
-        Board next {board};
-        int col {next_move(board, i_min, i_max, depth_stop, board.turn() == maximiser())};
-        next.play(col);
-        return next;
+        Board best_board;
+        int e = alpha_beta(board, i_min, i_max, depth_stop, board.turn() == maximiser(), best_board);
+        std::cout << "eval: " << e << '\n';
+        return best_board;
 }
 
-int Computer::next_move(const Board &board, int alpha, int beta, int depth, bool maximiser)
+int Computer::alpha_beta(const Board &board, int alpha, int beta, int depth, bool maximiser, Board &best_board)
 {
         next_move_count++;
 
-        switch (board.state()) {
-        case WIN_YELLOW:
-                return (100000 + depth) * ((this->maximiser() == YELLOW) ? 1 : -1);
-        case WIN_RED:
-                return (100000 + depth) * ((this->maximiser() == RED) ? 1 : -1);
-        case DRAW:
-                return 0;
-        default:;
+        STATE state = board.state();
+
+        if (depth == 0 || state != PLAYING) {
+                return utility(board, state);
         }
 
-        if (depth <= 0)
-                return utility(board);
+        if (maximiser) {
+                int value = i_min;
+                for (const auto &action : actions(board)) {
+                        int tmp = std::max(value, alpha_beta(action, alpha, beta, depth - 1, false, best_board));
 
-        int eval {maximiser ? i_min : i_max};
-        int optimal_index {0};
+                        if (tmp > value) {
+                                value = tmp;
 
-        std::vector<std::tuple<Board, int, STATE>> actions_arr {actions(board)};
+                                if (depth == depth_stop)
+                                        best_board = action;
+                        }
 
-        for (const auto &[action, col, state] : actions_arr) {
-                int move_eval {next_move(action, alpha, beta, depth - 1, !maximiser)};
+                        alpha = std::max(alpha, value);
 
-                if (maximiser ? (move_eval > eval) : (move_eval < eval)) {
-                        eval = move_eval;
-                        optimal_index = col;
+                        if (value >= beta)
+                                break;
                 }
 
-                if (maximiser && eval > alpha)
-                        alpha = eval;
-                // if (maximiser && eval > beta)
-                //         break;
+                return value;
+        } else {
+                int value = i_max;
+                for (const auto &action : actions(board)) {
+                        int tmp = std::min(value, alpha_beta(action, alpha, beta, depth - 1, true, best_board));
 
-                if (!maximiser && eval < beta)
-                        beta = eval;
-                // if (!maximiser && eval < alpha)
-                //         break;
+                        if (tmp < value) {
+                                value = tmp;
 
-                if (alpha >= beta)
-                        break;
+                                if (depth == depth_stop)
+                                        best_board = action;
+                        }
+
+                        beta = std::min(beta, value);
+
+                        if (value <= alpha)
+                                break;
+                }
+
+                return value;
         }
-
-        if (depth == depth_stop) {
-                std::cout << i_min << std::endl;
-                std::cout << i_max << std::endl;
-        }
-
-        return (depth == depth_stop) ? optimal_index : eval;
 }
 
-std::vector<std::tuple<Board, int, STATE>> Computer::actions(const Board &board)
+std::vector<Board> Computer::actions(const Board &board)
 {
-        std::vector<std::tuple<Board, int, STATE>> v;
+        std::vector<Board> v;
 
         for (const int &col : indices) {
                 if (board.test(col)) {
                         Board next {board};
                         next.play(col);
-                        v.push_back(std::make_tuple(next, col, next.state()));
+                        v.push_back(next);
                 }
         }
 
         return v;
 }
 
-int Computer::utility(const Board &board)
+int Computer::utility(const Board &board, STATE state)
 {
-        return Computer::evaluation(board, maximiser()) - Computer::evaluation(board, minimiser());
+        switch (state) {
+        case WIN_YELLOW:
+                return maximiser() == YELLOW ? i_max : i_min;
+        case WIN_RED:
+                return maximiser() == RED    ? i_max : i_min;
+        default:
+                return Computer::evaluation(board, maximiser()) - Computer::evaluation(board, minimiser());
+        }
 }
 
 int Computer::evaluation(const Board &board, COLOUR colour)

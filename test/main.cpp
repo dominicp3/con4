@@ -37,7 +37,7 @@ void test_utility()
         Board b {make_board()};
         board_io::print_board(b);
 
-        Computer c(RED);
+        Computer c(YELLOW);
         board_io::print_turn(b);
 
         // [2, 6, 5, 0, 4, 1, 3] <- worst performing indices
@@ -143,4 +143,5 @@ int main()
 {
         // game::game(false);
         test_utility();
+        
 }

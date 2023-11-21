@@ -20,14 +20,14 @@ public:
         Computer(COLOUR maximising_colour);
         Computer(int depth_stop, COLOUR maximising_colour);
 
-        int utility(const Board &board);
+        int utility(const Board &board, STATE state);
         int evaluation(const Board &board, COLOUR colour);
 
         COLOUR maximiser() const;
         COLOUR minimiser() const;
 
-        std::vector<std::tuple<Board, int, STATE>> actions(const Board &board);
-        int next_move(const Board &board, int alpha, int beta, int depth, bool maximiser);
+        std::vector<Board> actions(const Board &board);
+        int alpha_beta(const Board &board, int alpha, int beta, int depth, bool maximiser, Board &best_board);
         Board next_board(const Board &board);
 
         static int next_move_count;
@@ -51,7 +51,7 @@ private:
         static std::vector<BoardInRow> init_in_row_2_3();
 
         const int depth_stop = 9;
-        const bool red_is_maximiser = RED;
+        const bool red_is_maximiser = false;
 };
 
 #endif /* COMPUTER_H */
