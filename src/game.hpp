@@ -3,7 +3,7 @@
 
 namespace game
 {
-        void play(bool cpu, int depth);
+        void play(bool cpu, int depth, bool player_red);
 }
 
 #endif /* GAME_H */

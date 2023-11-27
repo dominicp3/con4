@@ -7,10 +7,8 @@
 namespace board_io
 {
         void print_board(const Board &b);
-        void print_board_xo(const Board &b);
 
         void print_state(const Board &b);
-        void print_state_xo(const Board &b);
 
         void print_turn(const Board &b);
         void print_turn_xo(const Board &b);

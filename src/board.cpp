@@ -1,6 +1,6 @@
 #include "board.hpp"
 
-Board::Board(bool red_turn, bool red_first): red_turn(red_turn), red_first(red_first) {}
+Board::Board(bool red_first): red_turn(red_first), red_first(red_first) {}
 
 Board::Board(std::map<std::pair<int, int>, bool> &m, bool red_turn, bool red_first): red_turn(red_turn), red_first(red_first)
 {

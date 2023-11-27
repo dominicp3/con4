@@ -41,7 +41,8 @@ namespace bitboard
 class Board
 {
 public:
-        Board(bool red_turn = false, bool red_first = false);
+        Board() = default;
+        Board(bool red_first);
         Board(std::map<std::pair<int, int>, bool> &m,   bool red_turn = false, bool red_first = false);
         Board(std::map<std::pair<int, int>, COLOUR> &m, bool red_turn = false, bool red_first = false);
 
@@ -71,8 +72,8 @@ private:
         std::bitset<N_BITS> yellow;
         std::bitset<N_BITS> red;
 
-        bool red_turn;
-        bool red_first;
+        bool red_turn = false;
+        bool red_first = false;
 };
 
 #endif /* BOARD_H */

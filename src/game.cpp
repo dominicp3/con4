@@ -5,25 +5,27 @@
 #include <iostream>
 #include <string>
 
-void game::play(bool cpu, int depth)
+void game::play(bool cpu, int depth, bool player_red)
 {
         if (depth <= 0) {
                 return;
         }
 
         int column;
-        Board b;
+        Board b {player_red};
         std::string outcome;
+
+        COLOUR player = player_red ? RED : YELLOW;
 
         Computer c {depth};
 
         std::cout << "Depth: " << depth << '\n';
 
         while (b.state() == PLAYING) {
-                board_io::print_board_xo(b);
-                board_io::print_state_xo(b);
+                board_io::print_board(b);
+                board_io::print_state(b);
 
-                if (b.turn() == YELLOW || (b.turn() == RED && !cpu)) {
+                if (b.turn() == player || (b.turn() != player && !cpu)) {
                         std::cin >> column;
 
                         if (std::cin.fail()) {
@@ -40,17 +42,17 @@ void game::play(bool cpu, int depth)
                         continue;
                 }
 
-                if (b.turn() == RED && cpu) {
+                if (b.turn() != player && cpu) {
                         int eval;
                         int x = c.best_move(b, eval);
                         b.play(x);
-                        std::cout << "Column " << x << " played!\n";
+                        std::cout << x << '\n';
                         std::cout << "Eval: " << eval << '\n';
                 }
         }
 
-        board_io::print_board_xo(b);
-        board_io::print_state_xo(b);
+        board_io::print_board(b);
+        board_io::print_state(b);
 
         std::cout << "\nTHANK YOU FOR PLAYING :)\n\n";
 }

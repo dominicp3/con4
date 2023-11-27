@@ -1,63 +1,34 @@
 #include "io.hpp"
 #include <iostream>
+#include <string>
 
 namespace board_io
 {
-        void print_board_xo(const Board &b)
-        {
-                auto arr {b.current()};
-                char c;
-                std::cout << "\n   ---------------------------\n";
-                for (int i = N_ROW - 1; i >= 0; i--) {
-                        for (int j = 0; j < N_COL; j++) {
-                                switch (arr[j][i]) {
-                                case YELLOW:
-                                        c = 'X';
-                                        break;
-                                case RED:
-                                        c = 'O'; break;
-                                case BLANK:
-                                        c = ' '; break;
-                                default:;
-                                }
-
-                                if (j == 0)
-                                        std::cout << i << " | ";
-                                std::cout << c << " | ";
-                        }
-                        std::cout << '\n';\
-                        if (i == 0) {
-                                std::cout << "   ---------------------------\n";
-                                std::cout << "    0   1   2   3   4   5   6\n";
-                        }
-                }
-                std::cout << "\n" << std::endl;
-        }
-
         void print_board(const Board &b)
         {
                 auto arr {b.current()};
-                char c;
-                std::cout << "\n   ---------------------------\n";
-                for (int i = N_ROW - 1; i >= 0; i--) {
-                        for (int j = 0; j < N_COL; j++) {
-                                switch (arr[j][i]) {
+                std::string s;
+                std::cout << "   ---------------------------\n";
+                for (int row = N_ROW - 1; row >= 0; row--) {
+                        for (int col = 0; col < N_COL; col++) {
+                                switch (arr[col][row]) {
                                 case YELLOW:
-                                        c = 'Y';
+                                        s = "\033[1;33mO\033[0m";
                                         break;
                                 case RED:
-                                        c = 'R'; break;
+                                        s = "\033[1;31mO\033[0m";
+                                        break;
                                 case BLANK:
-                                        c = ' '; break;
+                                        s = " "; break;
                                 default:;
                                 }
 
-                                if (j == 0)
-                                        std::cout << i << " | ";
-                                std::cout << c << " | ";
+                                if (col == 0)
+                                        std::cout << row << " | ";
+                                std::cout << s << " | ";
                         }
                         std::cout << '\n';
-                        if (i == 0) {
+                        if (row == 0) {
                                 std::cout << "   ---------------------------\n";
                                 std::cout << "    0   1   2   3   4   5   6\n";
                         }
@@ -85,34 +56,6 @@ namespace board_io
                                 std::cout << "RED's turn: ";
                         } else if (b.turn() == YELLOW) {
                                 std::cout << "YELLOW's turn: ";
-                        }
-                        break;
-
-                default:
-                        std::cout << "ERROR STATE !!\n";
-                }
-        }
-
-        void print_state_xo(const Board &b)
-        {
-                switch (b.state()) {
-                case WIN_YELLOW:
-                        std::cout << "X WON !!\n";
-                        break;
-
-                case WIN_RED:
-                        std::cout << "O WON !!\n";
-                        break;
-
-                case DRAW:
-                        std::cout << "DRAW !!\n";
-                        break;
-
-                case PLAYING:
-                        if (b.turn() == RED) {
-                                std::cout << "O's turn: ";
-                        } else if (b.turn() == YELLOW) {
-                                std::cout << "X's turn: ";
                         }
                         break;
 
