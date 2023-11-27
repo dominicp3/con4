@@ -8,7 +8,8 @@
 static constexpr int i_min {std::numeric_limits<int>::min()};
 static constexpr int i_max {std::numeric_limits<int>::max()};
 
-enum ORIENTATION {
+enum ORIENTATION
+{
         VERTICAL,
         HORIZONTAL,
         DIAGONAL_POS,
@@ -16,7 +17,8 @@ enum ORIENTATION {
         ORIENTATION_ERROR
 };
 
-class Computer {
+class Computer
+{
 public:
         Computer() = default;
 

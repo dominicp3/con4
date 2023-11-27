@@ -13,14 +13,16 @@ static constexpr int N_COL = 7;
 static constexpr int N_ROW = 6;
 static constexpr int N_BITS = N_COL * N_ROW;
 
-enum COLOUR {
+enum COLOUR
+{
         YELLOW,
         RED,
         BLANK,
         COLOUR_ERROR
 };
 
-enum STATE {
+enum STATE
+{
         PLAYING,
         DRAW,
         WIN_YELLOW,
@@ -28,14 +30,16 @@ enum STATE {
         STATE_ERROR
 };
 
-namespace bitboard {
+namespace bitboard
+{
         size_t vertical(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t horizontal(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t diagonal_pos(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n = 4);
 }
 
-class Board {
+class Board
+{
 public:
         Board(bool red_turn = false, bool red_first = false);
         Board(std::map<std::pair<int, int>, bool> &m,   bool red_turn = false, bool red_first = false);

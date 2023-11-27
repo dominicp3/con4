@@ -185,8 +185,10 @@ int Computer::evaluation(const Board &board, COLOUR colour) const
 
 int Computer::allocate_points(bool first, int row, bool two_in_row) const
 {
-        if ((first && row % 2 == 0) || (!first && row % 2 == 1))
+        if ((first && row % 2 == 0) || (!first && row % 2 == 1)) {
                 return two_in_row ? 8 : 40;
+        }
+
         return two_in_row ? 3 : 15;
 }
 

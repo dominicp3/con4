@@ -1,7 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-namespace game {
+namespace game
+{
         void play(bool cpu, int depth);
 }
 
