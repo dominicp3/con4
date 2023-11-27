@@ -154,7 +154,7 @@ size_t bitboard::vertical(std::vector<std::bitset<N_BITS>> &v, int n)
                 for (row = 0; row + (n - 1) < N_ROW; row++) {
                         std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++) 
-                                b.set(N_ROW * col + row + i);
+                                b.set(N_ROW * (col) + (row + i));
                         v.push_back(b);
                         count++;
                 }
@@ -174,7 +174,7 @@ size_t bitboard::horizontal(std::vector<std::bitset<N_BITS>> &v, int n)
                 for (row = 0; row < N_ROW; row++) {
                         std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
-                                b.set(N_ROW * col + row + N_ROW * i);
+                                b.set(N_ROW * (col + i) + (row));
                         v.push_back(b);
                         count++;
                 }
@@ -194,7 +194,7 @@ size_t bitboard::diagonal_pos(std::vector<std::bitset<N_BITS>> &v, int n)
                 for (row = 0; row + (n - 1) < N_ROW; row++) {
                         std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
-                                b.set(N_ROW * col + row + (N_ROW + 1) * i);
+                                b.set(N_ROW * (col + i) + (row + i));
                         v.push_back(b);
                         count++;
                 }
@@ -214,7 +214,7 @@ size_t bitboard::diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n)
                 for (row = N_ROW - 1; row - (n - 1) >= 0; row--) {
                         std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
-                                b.set(N_ROW * col + row + (N_ROW - 1) * i);
+                                b.set(N_ROW * (col + i) + (row - i));
                         v.push_back(b);
                         count++;
                 }
