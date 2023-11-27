@@ -4,23 +4,21 @@
 #include <iostream>
 #include <string>
 
-void game::game(bool cpu)
+void game::game(bool cpu, int depth)
 {
-        cpu = true;
+        if (depth <= 0) {
+                return;
+        }
+
         Board b;
         int column;
         std::string outcome;
 
-        Computer c(9);
+        Computer c(depth);
 
         while (b.state() == PLAYING) {
-                board_io::print_board(b);
-
-                if (b.turn() == YELLOW) {
-                        std::cout << "X's turn: " << std::flush;
-                } else if (b.turn() == RED) {
-                        std::cout << "O's turn: " << std::flush;
-                }
+                board_io::print_board_xo(b);
+                board_io::print_state_xo(b);
 
                 if (b.turn() == YELLOW || (b.turn() == RED && !cpu)) {
                         std::cin >> column;
@@ -39,11 +37,12 @@ void game::game(bool cpu)
                         continue;
                 }
 
-                if (b.turn() == RED && cpu)
-                        b = c.next_board(b);
+                if (b.turn() == RED && cpu) {
+                        b.play(c.best_move(b));
+                }
         }
 
-        board_io::print_board(b);
+        board_io::print_board_xo(b);
         board_io::print_state_xo(b);
 
         std::cout << "\nTHANK YOU FOR PLAYING :)\n\n";

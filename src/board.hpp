@@ -9,12 +9,12 @@
         NOTE: ASSUMED YELLOW MOVES FIRST
 */
 
-enum COLOUR {YELLOW, RED, BLANK, COLOUR_ERROR};
-enum STATE  {PLAYING, DRAW, WIN_YELLOW, WIN_RED, STATE_ERROR};
-
 static constexpr int N_COL = 7;
 static constexpr int N_ROW = 6;
 static constexpr int N_BITS = N_COL * N_ROW;
+
+enum COLOUR {YELLOW, RED, BLANK, COLOUR_ERROR};
+enum STATE  {PLAYING, DRAW, WIN_YELLOW, WIN_RED, STATE_ERROR};
 
 namespace bitboard {
         size_t vertical(std::vector<std::bitset<N_BITS>> &v, int n = 4);
@@ -27,13 +27,13 @@ namespace bitboard {
 class Board {
 public:
         Board(bool red_turn = false, bool red_first = false);
-        Board(std::map<std::pair<int, int>, bool> &m, bool red_turn = false, bool red_first = false);
+        Board(std::map<std::pair<int, int>, bool> &m,   bool red_turn = false, bool red_first = false);
         Board(std::map<std::pair<int, int>, COLOUR> &m, bool red_turn = false, bool red_first = false);
 
         bool play(int column);
-        bool test(int column) const;
-
         void swap_turn();
+
+        bool test(int column) const;
 
         STATE state() const;
 
@@ -48,7 +48,6 @@ public:
 
 private:
         static const std::vector<std::bitset<N_BITS>> wins;
-
         static std::vector<std::bitset<N_BITS>> init_wins();
 
         void init_map(std::map<std::pair<int, int>, bool> &m);

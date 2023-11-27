@@ -4,16 +4,18 @@
 #include "board.hpp"
 #include "computer.hpp"
 
-namespace board_io
-{
+namespace board_io {
         void print_board(const Board &b);
+        void print_board_xo(const Board &b);
+
         void print_state(const Board &b);
         void print_state_xo(const Board &b);
+
         void print_turn(const Board &b);
+        void print_turn_xo(const Board &b);
 }
 
-namespace computer_io
-{
+namespace computer_io {
         void print_orientation(ORIENTATION o);
         void print_colour(COLOUR c);
 }

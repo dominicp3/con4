@@ -83,7 +83,7 @@ void Board::swap_turn()
 
 STATE Board::state() const
 {
-        for (auto &b : wins) {
+        for (const auto &b : wins) {
                 if ((b & yellow) == b)
                         return WIN_YELLOW;
 
@@ -116,11 +116,12 @@ COLOUR Board::cell(int col, int row) const
                 return RED;
 
         return BLANK;
-}       
+}
 
 std::vector<std::vector<COLOUR>> Board::current() const
 {
         std::vector<std::vector<COLOUR>> v {N_COL, std::vector<COLOUR> {N_ROW, BLANK}};
+
         int col, row;
         for (col = 0; col < N_COL; col++) {
                 for (row = 0; row < N_ROW; row++) {

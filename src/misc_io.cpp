@@ -4,6 +4,37 @@
 
 namespace board_io
 {
+        void print_board_xo(const Board &b)
+        {
+                auto arr {b.current()};
+                char c;
+                std::cout << "\n   ---------------------------\n";
+                for (int i = N_ROW - 1; i >= 0; i--) {
+                        for (int j = 0; j < N_COL; j++) {
+                                switch (arr[j][i]) {
+                                case YELLOW:
+                                        c = 'X';
+                                        break;
+                                case RED:
+                                        c = 'O'; break;
+                                case BLANK:
+                                        c = ' '; break;
+                                default:;
+                                }
+
+                                if (j == 0)
+                                        std::cout << i << " | ";
+                                std::cout << c << " | ";
+                        }
+                        std::cout << '\n';\
+                        if (i == 0) {
+                                std::cout << "   ---------------------------\n";
+                                std::cout << "    0   1   2   3   4   5   6\n";
+                        }
+                }
+                std::cout << "\n" << std::endl;
+        }
+
         void print_board(const Board &b)
         {
                 auto arr {b.current()};
@@ -26,7 +57,7 @@ namespace board_io
                                         std::cout << i << " | ";
                                 std::cout << c << " | ";
                         }
-                        std::cout << '\n';\
+                        std::cout << '\n';
                         if (i == 0) {
                                 std::cout << "   ---------------------------\n";
                                 std::cout << "    0   1   2   3   4   5   6\n";
@@ -51,7 +82,11 @@ namespace board_io
                         break;
 
                 case PLAYING:
-                        std::cout << "GAME IN PROGRESS !!\n";
+                        if (b.turn() == RED) {
+                                std::cout << "RED's turn: ";
+                        } else if (b.turn() == YELLOW) {
+                                std::cout << "YELLOW's turn: ";
+                        }
                         break;
 
                 default:
@@ -75,15 +110,17 @@ namespace board_io
                         break;
 
                 case PLAYING:
-                        std::cout << "GAME IN PROGRESS !!\n";
+                        if (b.turn() == RED) {
+                                std::cout << "O's turn: ";
+                        } else if (b.turn() == YELLOW) {
+                                std::cout << "X's turn: ";
+                        }
                         break;
 
                 default:
                         std::cout << "ERROR STATE !!\n";
                 }
         }
-
-        
 
         void print_turn(const Board &b)
         {
@@ -94,6 +131,22 @@ namespace board_io
                 
                 case RED:
                         std::cout << "Red's turn\n";
+                        return;
+                
+                default:
+                        std::cout << "TURN ERROR !!\n";
+                }
+        }
+
+        void print_turn_xo(const Board &b)
+        {
+                switch (b.turn()) {
+                case YELLOW:
+                        std::cout << "X's turn\n";
+                        return;
+                
+                case RED:
+                        std::cout << "O's turn\n";
                         return;
                 
                 default:
