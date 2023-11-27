@@ -1,5 +1,4 @@
-#include "board.hpp"
-#include "computer.hpp"
+#include "io.hpp"
 #include <iostream>
 
 namespace board_io

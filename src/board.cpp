@@ -1,6 +1,4 @@
 #include "board.hpp"
-#include <iostream>
-#include "misc_io.hpp"
 
 Board::Board(bool red_turn, bool red_first): red_turn(red_turn), red_first(red_first) {}
 
@@ -16,7 +14,7 @@ Board::Board(std::map<std::pair<int, int>, COLOUR> &m, bool red_turn, bool red_f
 
 void Board::init_map(std::map<std::pair<int, int>, bool> &m)
 {
-        for (auto &&[coord, _red] : m) {
+        for (const auto &[coord, _red] : m) {
                 if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
                         continue;
 
@@ -29,7 +27,7 @@ void Board::init_map(std::map<std::pair<int, int>, bool> &m)
 
 void Board::init_map(std::map<std::pair<int, int>, COLOUR> &m)
 {
-        for (auto &&[coord, colour] : m) {
+        for (const auto &[coord, colour] : m) {
                 if (coord.first < 0 || coord.first >= N_COL || coord.second < 0 || coord.second >= N_ROW)
                         continue;
 
@@ -49,9 +47,9 @@ bool Board::play(int column)
         int i, count;
         std::bitset<N_BITS> &&yellow_red = yellow | red;
 
-        for (i = N_ROW * column, count = 0; i < N_BITS && yellow_red[i]; i++, count++);
+        for (i = N_ROW * column, count = 0; count < N_ROW && i < N_BITS && yellow_red[i]; i++, count++);
 
-        if (count >= N_ROW)
+        if (count == N_ROW)
                 return false;
 
         red_turn ? red.set(i) : yellow.set(i);
@@ -68,12 +66,9 @@ bool Board::test(int column) const
         int i, count;
         std::bitset<N_BITS> &&yellow_red = yellow | red;
 
-        for (i = N_ROW * column, count = 0; i < N_BITS && yellow_red[i]; i++, count++);
+        for (i = N_ROW * column, count = 0; count < N_ROW && i < N_BITS && yellow_red[i]; i++, count++);
 
-        if (count >= N_ROW)
-                return false;
-
-        return true;
+        return count != N_ROW;
 }
 
 void Board::swap_turn()
@@ -157,7 +152,7 @@ size_t bitboard::vertical(std::vector<std::bitset<N_BITS>> &v, int n)
         size_t count {0};
         for (col = 0; col < N_COL; col++) {
                 for (row = 0; row + (n - 1) < N_ROW; row++) {
-                        std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
+                        std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++) 
                                 b.set(N_ROW * col + row + i);
                         v.push_back(b);
@@ -177,7 +172,7 @@ size_t bitboard::horizontal(std::vector<std::bitset<N_BITS>> &v, int n)
         size_t count {0};
         for (col = 0; col + (n - 1) < N_COL; col++) {
                 for (row = 0; row < N_ROW; row++) {
-                        std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
+                        std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
                                 b.set(N_ROW * col + row + N_ROW * i);
                         v.push_back(b);
@@ -197,7 +192,7 @@ size_t bitboard::diagonal_pos(std::vector<std::bitset<N_BITS>> &v, int n)
         size_t count {0};
         for (col = 0; col + (n - 1) < N_COL; col++) {
                 for (row = 0; row + (n - 1) < N_ROW; row++) {
-                        std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
+                        std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
                                 b.set(N_ROW * col + row + (N_ROW + 1) * i);
                         v.push_back(b);
@@ -217,7 +212,7 @@ size_t bitboard::diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n)
         size_t count {0};
         for (col = 0; col + (n - 1) < N_COL; col++) {
                 for (row = N_ROW - 1; row - (n - 1) >= 0; row--) {
-                        std::bitset<N_BITS> b {std::bitset<N_BITS> {}};
+                        std::bitset<N_BITS> b;
                         for (i = 0; i < n; i++)
                                 b.set(N_ROW * col + row + (N_ROW - 1) * i);
                         v.push_back(b);
@@ -226,24 +221,6 @@ size_t bitboard::diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n)
         }
 
         return count;
-}
-
-void bitboard::print(std::bitset<N_BITS> &b)
-{
-        int x;
-        for (int i = N_ROW - 1; i >= 0; i--) {
-                for (int j = 0; j < N_COL; j++) {
-                        x = i + N_ROW * j;
-
-                        if (b[x]) {
-                                std::cout << "1 | ";
-                        } else {
-                                std::cout << "  | ";
-                        }
-                }
-                std::cout << '\n';
-        }
-        std::cout << '\n';
 }
 
 const std::bitset<N_BITS> Board::yellow_bitset() const

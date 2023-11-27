@@ -5,36 +5,41 @@
 #include <vector>
 #include <array>
 
-
-
 static constexpr int i_min {std::numeric_limits<int>::min()};
 static constexpr int i_max {std::numeric_limits<int>::max()};
 
-enum ORIENTATION {VERTICAL, HORIZONTAL, DIAGONAL_POS, DIAGONAL_NEG, ORIENTATION_ERROR};
+enum ORIENTATION {
+        VERTICAL,
+        HORIZONTAL,
+        DIAGONAL_POS,
+        DIAGONAL_NEG,
+        ORIENTATION_ERROR
+};
 
 class Computer {
 public:
         Computer() = default;
+
         Computer(int depth_stop);
         Computer(COLOUR maximising_colour);
+
         Computer(int depth_stop, COLOUR maximising_colour);
         Computer(COLOUR maximising_colour, int depth_stop);
 
         int best_move(const Board &board) const;
-        int evaluation(const Board &board, COLOUR colour) const;
-
-        static int calls;
+        int best_move(const Board &board, int &eval) const;
 
 private:
         const int depth_stop = 9;
         const bool red_is_maximiser = false;
 
         int alpha_beta(const Board &board, int alpha, int beta, int depth, bool maximiser, int &best_col) const;
+        int evaluation(const Board &board, COLOUR colour) const;
 
         std::vector<std::pair<Board, int>> possible_moves(const Board &board) const;
 
-        int utility(const Board &board, STATE state, int) const;
-        int allocate_points(COLOUR colour, COLOUR first, int row, bool two_in_row) const;
+        int utility(const Board &board, STATE state) const;
+        int allocate_points(bool first, int row, bool two_in_row) const;
 
         COLOUR maximiser() const;
         COLOUR minimiser() const;

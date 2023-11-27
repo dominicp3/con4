@@ -13,15 +13,26 @@ static constexpr int N_COL = 7;
 static constexpr int N_ROW = 6;
 static constexpr int N_BITS = N_COL * N_ROW;
 
-enum COLOUR {YELLOW, RED, BLANK, COLOUR_ERROR};
-enum STATE  {PLAYING, DRAW, WIN_YELLOW, WIN_RED, STATE_ERROR};
+enum COLOUR {
+        YELLOW,
+        RED,
+        BLANK,
+        COLOUR_ERROR
+};
+
+enum STATE {
+        PLAYING,
+        DRAW,
+        WIN_YELLOW,
+        WIN_RED,
+        STATE_ERROR
+};
 
 namespace bitboard {
         size_t vertical(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t horizontal(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t diagonal_pos(std::vector<std::bitset<N_BITS>> &v, int n = 4);
         size_t diagonal_neg(std::vector<std::bitset<N_BITS>> &v, int n = 4);
-        void print(std::bitset<N_BITS> &b);
 }
 
 class Board {
@@ -40,7 +51,7 @@ public:
         COLOUR turn() const;
         COLOUR first() const;
         COLOUR cell(int col, int row) const;
-        
+
         const std::bitset<N_BITS> yellow_bitset() const;
         const std::bitset<N_BITS> red_bitset() const;
 

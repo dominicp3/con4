@@ -1,12 +1,7 @@
 #include "computer.hpp"
-#include "misc_io.hpp"
-#include <iostream>
 #include <algorithm>
 #include <random>
 #include <utility>
-#include <chrono>
-
-int Computer::calls = 0;
 
 Computer::Computer(int depth_stop): depth_stop(depth_stop) {}
 Computer::Computer(COLOUR maximising_colour): red_is_maximiser(maximising_colour == RED ? true : false) {}
@@ -20,12 +15,19 @@ int Computer::best_move(const Board &board) const
         return best_col;
 }
 
+int Computer::best_move(const Board &board, int &eval) const
+{
+        int best_col = -1;
+        eval = alpha_beta(board, i_min, i_max, depth_stop, board.turn() == maximiser(), best_col);
+        return best_col;
+}
+
 int Computer::alpha_beta(const Board &board, int alpha, int beta, int depth, bool maximiser, int &best_col) const
 {
         STATE state = board.state();
 
         if (depth == 0 || state != PLAYING) {
-                return utility(board, state, depth);
+                return utility(board, state);
         }
 
         if (maximiser) {
@@ -77,8 +79,7 @@ std::vector<std::pair<Board, int>> Computer::possible_moves(const Board &board) 
 {
         std::vector<std::pair<Board, int>> v;
 
-        // for (const int &col : indices) {
-        for (int col = 0; col < N_COL; col++) {
+        for (const int &col : indices) {
                 if (board.test(col)) {
                         Board next {board};
                         next.play(col);
@@ -89,13 +90,13 @@ std::vector<std::pair<Board, int>> Computer::possible_moves(const Board &board) 
         return v;
 }
 
-int Computer::utility(const Board &board, STATE state, int depth) const
+int Computer::utility(const Board &board, STATE state) const
 {
         switch (state) {
         case WIN_YELLOW:
-                return maximiser() == YELLOW ? 10000 + depth : -10000 - depth;
+                return maximiser() == YELLOW ? i_max : i_min;
         case WIN_RED:
-                return maximiser() == RED    ? 10000 + depth : -10000 - depth;
+                return maximiser() == RED    ? i_max : i_min;
         default:
                 return Computer::evaluation(board, maximiser()) - Computer::evaluation(board, minimiser());
         }
@@ -103,88 +104,88 @@ int Computer::utility(const Board &board, STATE state, int depth) const
 
 int Computer::evaluation(const Board &board, COLOUR colour) const
 {
-        if (colour != RED && colour != YELLOW)
+        if (colour != RED && colour != YELLOW) {
                 return 0;
+        }
 
         COLOUR cell_before, cell_after;
         int points = 0;
 
-        const auto &full_board {((colour == YELLOW) ? board.yellow_bitset() : board.red_bitset())};
+        const auto &full_board = ((colour == YELLOW) ? board.yellow_bitset() : board.red_bitset());
 
         for (const auto &b : Computer::in_row_2_3) {
-                auto x = (full_board & b.bitboard);
-                // if ((full_board & b.bitboard) == b.bitboard) {
+                if ((full_board & b.bitboard) == b.bitboard) {
 
-                //         int n {b.two_in_row ? 2 : 3};
-                //         int row_before, row_after, col_before, col_after;
+                        int n = b.two_in_row ? 2 : 3;
+                        int row_before, row_after, col_before, col_after;
 
-                //         switch (b.orientation) {
-                //         case VERTICAL:
-                //                 col_before = -1;
-                //                 row_before = -1;
+                        switch (b.orientation) {
+                        case VERTICAL:
+                                col_before = -1;
+                                row_before = -1;
 
-                //                 col_after = b.col;
-                //                 row_after = b.row + n;
+                                col_after = b.col;
+                                row_after = b.row + n;
 
-                //                 break;
+                                break;
 
-                //         case HORIZONTAL:
-                //                 col_before = b.col - 1;
-                //                 row_before = b.row;
+                        case HORIZONTAL:
+                                col_before = b.col - 1;
+                                row_before = b.row;
 
-                //                 col_after = b.col + n;
-                //                 row_after = b.row;
+                                col_after = b.col + n;
+                                row_after = b.row;
 
-                //                 break;
+                                break;
 
-                //         case DIAGONAL_POS:
-                //                 col_before = b.col - 1;
-                //                 row_before = b.row - 1;
+                        case DIAGONAL_POS:
+                                col_before = b.col - 1;
+                                row_before = b.row - 1;
 
-                //                 col_after = b.col + n;
-                //                 row_after = b.row + n;
+                                col_after = b.col + n;
+                                row_after = b.row + n;
 
-                //                 break;
+                                break;
 
-                //         case DIAGONAL_NEG:
-                //                 col_before = b.col - 1;
-                //                 row_before = b.row + 1;
+                        case DIAGONAL_NEG:
+                                col_before = b.col - 1;
+                                row_before = b.row + 1;
 
-                //                 col_after = b.col + n;
-                //                 row_after = b.row - n;
+                                col_after = b.col + n;
+                                row_after = b.row - n;
 
-                //                 break;
+                                break;
 
-                //         default:
-                //                 continue;
-                //         }
+                        default:
+                                continue;
+                        }
 
-                //         cell_before = board.cell(col_before, row_before);
-                //         cell_after  = board.cell(col_after, row_after);
+                        cell_before = board.cell(col_before, row_before);
+                        cell_after  = board.cell(col_after, row_after);
 
-                //         if (cell_before == colour || cell_after == colour) {
-                //                 continue;
-                //         }
+                        if (cell_before == colour || cell_after == colour) {
+                                continue;
+                        }
 
-                //         if (cell_before == BLANK) {
-                //                 points += allocate_points(colour, board.first(), row_before, b.two_in_row);
-                //         }
+                        if (cell_before == BLANK) {
+                                points += allocate_points(colour == board.first(), row_before, b.two_in_row);
+                        }
 
-                //         if (cell_after == BLANK) {
-                //                 points += allocate_points(colour, board.first(), row_after, b.two_in_row);
-                //         }
-                // }
+                        if (cell_after == BLANK) {
+                                points += allocate_points(colour == board.first(), row_after, b.two_in_row);
+                        }
+                }
         }
 
         return points;
 }
 
-int Computer::allocate_points(COLOUR colour, COLOUR first, int row, bool two_in_row) const
+int Computer::allocate_points(bool first, int row, bool two_in_row) const
 {
-        if ((colour == first && row % 2 == 0) || (colour != first && row % 2 == 1))
+        if ((first && row % 2 == 0) || (!first && row % 2 == 1))
                 return two_in_row ? 8 : 40;
         return two_in_row ? 3 : 15;
-}  
+}
 
 COLOUR Computer::maximiser() const
 {
@@ -198,8 +199,8 @@ COLOUR Computer::minimiser() const
 
 std::vector<Computer::BoardInRow> Computer::init_in_row_2_3()
 {
-        // std::vector<std::bitset<N_BITS>> vertical_2;
-        // std::vector<std::bitset<N_BITS>> vertical_3;
+        std::vector<std::bitset<N_BITS>> vertical_2;
+        std::vector<std::bitset<N_BITS>> vertical_3;
 
         std::vector<std::bitset<N_BITS>> horizontal_2;
         std::vector<std::bitset<N_BITS>> horizontal_3;
@@ -210,8 +211,8 @@ std::vector<Computer::BoardInRow> Computer::init_in_row_2_3()
         std::vector<std::bitset<N_BITS>> diagonal_neg_2;
         std::vector<std::bitset<N_BITS>> diagonal_neg_3;
 
-        // bitboard::vertical(vertical_2, 2);
-        // bitboard::vertical(vertical_3, 3);
+        bitboard::vertical(vertical_2, 2);
+        bitboard::vertical(vertical_3, 3);
 
         bitboard::horizontal(horizontal_2, 2);
         bitboard::horizontal(horizontal_3, 3);
@@ -237,8 +238,8 @@ std::vector<Computer::BoardInRow> Computer::init_in_row_2_3()
                 }
         };
 
-        // push(v, vertical_2, VERTICAL, true);
-        // push(v, vertical_3, VERTICAL, false);
+        push(v, vertical_2, VERTICAL, true);
+        push(v, vertical_3, VERTICAL, false);
 
         push(v, horizontal_2, HORIZONTAL, true);
         push(v, horizontal_3, HORIZONTAL, false);

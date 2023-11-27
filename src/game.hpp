@@ -2,8 +2,7 @@
 #define GAME_H
 
 namespace game {
-        void game(bool cpu, int depth);
+        void play(bool cpu, int depth);
 }
-
 
 #endif /* GAME_H */

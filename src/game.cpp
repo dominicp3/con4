@@ -1,20 +1,23 @@
 #include "game.hpp"
 #include "board.hpp"
-#include "misc_io.hpp"
+#include "computer.hpp"
+#include "io.hpp"
 #include <iostream>
 #include <string>
 
-void game::game(bool cpu, int depth)
+void game::play(bool cpu, int depth)
 {
         if (depth <= 0) {
                 return;
         }
 
-        Board b;
         int column;
+        Board b;
         std::string outcome;
 
-        Computer c(depth);
+        Computer c {depth};
+
+        std::cout << "Depth: " << depth << '\n';
 
         while (b.state() == PLAYING) {
                 board_io::print_board_xo(b);
@@ -38,7 +41,11 @@ void game::game(bool cpu, int depth)
                 }
 
                 if (b.turn() == RED && cpu) {
-                        b.play(c.best_move(b));
+                        int eval;
+                        int x = c.best_move(b, eval);
+                        b.play(x);
+                        std::cout << "Column " << x << " played!\n";
+                        std::cout << "Eval: " << eval << '\n';
                 }
         }
 
