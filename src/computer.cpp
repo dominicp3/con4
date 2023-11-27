@@ -3,6 +3,9 @@
 #include <random>
 #include <utility>
 
+const std::vector<Computer::BoardInRow> Computer::in_row_2_3 {Computer::init_in_row_2_3()};
+const std::array<int, N_COL> Computer::indices {Computer::init_indices()};
+
 Computer::Computer(int depth_stop): depth_stop(depth_stop) {}
 Computer::Computer(COLOUR maximising_colour): red_is_maximiser(maximising_colour == RED ? true : false) {}
 Computer::Computer(int depth_stop, COLOUR maximising_colour): depth_stop(depth_stop), red_is_maximiser(maximising_colour == RED ? true : false) {}
@@ -266,6 +269,3 @@ std::array<int, N_COL> Computer::init_indices()
 
         return arr;
 }
-
-const std::vector<Computer::BoardInRow> Computer::in_row_2_3 {Computer::init_in_row_2_3()};
-const std::array<int, N_COL> Computer::indices {Computer::init_indices()};

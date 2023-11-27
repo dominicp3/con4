@@ -35,17 +35,12 @@ private:
 
         int alpha_beta(const Board &board, int alpha, int beta, int depth, bool maximiser, int &best_col) const;
         int evaluation(const Board &board, COLOUR colour) const;
-
         std::vector<std::pair<Board, int>> possible_moves(const Board &board) const;
-
         int utility(const Board &board, STATE state) const;
         int allocate_points(bool first, int row, bool two_in_row) const;
 
         COLOUR maximiser() const;
         COLOUR minimiser() const;
-
-        static const std::array<int, N_COL> indices;
-        static std::array<int, N_COL> init_indices();
 
         struct BoardInRow {
                 std::bitset<N_BITS> bitboard;
@@ -56,7 +51,10 @@ private:
         };
 
         static const std::vector<BoardInRow> in_row_2_3;
-        static std::vector<BoardInRow> init_in_row_2_3();      
+        static std::vector<BoardInRow> init_in_row_2_3(); 
+
+        static const std::array<int, N_COL> indices;
+        static std::array<int, N_COL> init_indices();
 };
 
 #endif /* COMPUTER_H */
