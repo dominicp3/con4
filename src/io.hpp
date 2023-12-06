@@ -11,7 +11,6 @@ namespace board_io
         void print_state(const Board &b);
 
         void print_turn(const Board &b);
-        void print_turn_xo(const Board &b);
 }
 
 namespace computer_io

@@ -34,6 +34,7 @@ namespace board_io
                         }
                 }
                 std::cout << "\n" << std::endl;
+                std::cout.flush();
         }
 
         void print_state(const Board &b)
@@ -52,48 +53,32 @@ namespace board_io
                         break;
 
                 case PLAYING:
-                        if (b.turn() == RED) {
-                                std::cout << "RED's turn: ";
-                        } else if (b.turn() == YELLOW) {
-                                std::cout << "YELLOW's turn: ";
-                        }
+                        print_turn(b);
                         break;
 
                 default:
                         std::cout << "ERROR STATE !!\n";
                 }
+
+                std::cout.flush();
         }
 
         void print_turn(const Board &b)
         {
                 switch (b.turn()) {
                 case YELLOW:
-                        std::cout << "Yellow's turn\n";
+                        std::cout << "Yellow's turn: ";
                         return;
                 
                 case RED:
-                        std::cout << "Red's turn\n";
+                        std::cout << "Red's turn: ";
                         return;
                 
                 default:
                         std::cout << "TURN ERROR !!\n";
                 }
-        }
 
-        void print_turn_xo(const Board &b)
-        {
-                switch (b.turn()) {
-                case YELLOW:
-                        std::cout << "X's turn\n";
-                        return;
-                
-                case RED:
-                        std::cout << "O's turn\n";
-                        return;
-                
-                default:
-                        std::cout << "TURN ERROR !!\n";
-                }
+                std::cout.flush();
         }
 }
 
@@ -120,6 +105,8 @@ namespace computer_io
 
                 default:;
                 }
+
+                std::cout.flush();
         }
 
         void print_colour(COLOUR c)
@@ -133,5 +120,7 @@ namespace computer_io
                         return;
                 default:;
                 }
+
+                std::cout.flush();
         }
 }

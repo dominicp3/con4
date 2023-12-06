@@ -16,13 +16,12 @@ void game::play(bool cpu, int depth, bool player_red)
         std::string outcome;
 
         COLOUR player = player_red ? RED : YELLOW;
-
-        Computer c {depth};
-
-        std::cout << "Depth: " << depth << '\n';
+        Computer comp(depth, player_red ? RED : YELLOW);
 
         while (b.state() == PLAYING) {
                 board_io::print_board(b);
+
+                print_state:
                 board_io::print_state(b);
 
                 if (b.turn() == player || (b.turn() != player && !cpu)) {
@@ -32,10 +31,10 @@ void game::play(bool cpu, int depth, bool player_red)
                                 std::cout << "ERROR: not an integer !!" << std::endl;
                                 std::cin.clear();
                                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                                continue;
+                                goto print_state;
                         } else if (column < 0 || column >= N_COL) {
-                                std::cout << "\nERROR: integer out of bounds !!\n\n";
-                                continue;
+                                std::cout << "ERROR: integer out of bounds !!\n\n";
+                                goto print_state;
                         }
 
                         b.play(column);
@@ -43,10 +42,13 @@ void game::play(bool cpu, int depth, bool player_red)
                 }
 
                 if (b.turn() != player && cpu) {
+                        std::cout << "Calculating... ";
+                        std::cout.flush();
+
                         int eval;
-                        int x = c.best_move(b, eval);
-                        b.play(x);
-                        std::cout << x << '\n';
+                        int column = comp.best_move(b, eval);
+                        b.play(column);
+                        std::cout << column << '\n';
                         std::cout << "Eval: " << eval << '\n';
                 }
         }

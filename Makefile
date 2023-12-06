@@ -6,6 +6,9 @@ CXXFLAGS=-std=c++20 -O3 -Wall -Wextra -pedantic -Werror -Werror=vla -Wno-unused-
 bin/cpu: test/cpu.cpp src/board.cpp src/io.cpp src/game.cpp src/computer.cpp bin/
 	$(CXX) $(CXXFLAGS) -o $@ $< $(filter src/%.cpp, $^)
 
+bin/test: test/test.cpp src/board.cpp src/io.cpp src/game.cpp src/computer.cpp bin/
+	$(CXX) $(CXXFLAGS) -o $@ $< $(filter src/%.cpp, $^)
+
 obj/board.o: src/board.cpp src/board.hpp obj/
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 

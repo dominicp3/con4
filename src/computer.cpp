@@ -29,7 +29,7 @@ int Computer::alpha_beta(const Board &board, int alpha, int beta, int depth, boo
 {
         STATE state = board.state();
 
-        if (depth == 0 || state != PLAYING) {
+        if (depth == 0 || state != PLAYING) {                
                 return utility(board, state);
         }
 
@@ -37,7 +37,6 @@ int Computer::alpha_beta(const Board &board, int alpha, int beta, int depth, boo
                 int value = i_min;
                 for (const auto &[action, col] : possible_moves(board)) {
                         int tmp = alpha_beta(action, alpha, beta, depth - 1, false, best_col);
-
                         if (tmp > value) {
                                 value = tmp;
 
@@ -97,9 +96,9 @@ int Computer::utility(const Board &board, STATE state) const
 {
         switch (state) {
         case WIN_YELLOW:
-                return maximiser() == YELLOW ? i_max : i_min;
+                return maximiser() == YELLOW ? 1000000 : -1000000;
         case WIN_RED:
-                return maximiser() == RED    ? i_max : i_min;
+                return maximiser() == RED    ? 1000000 : -1000000;
         default:
                 return Computer::evaluation(board, maximiser()) - Computer::evaluation(board, minimiser());
         }
