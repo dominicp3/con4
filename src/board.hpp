@@ -3,6 +3,7 @@
 
 #include <bitset>
 #include <vector>
+#include <array>
 #include <map>
 
 /*
@@ -71,6 +72,8 @@ private:
 
         std::bitset<N_BITS> yellow;
         std::bitset<N_BITS> red;
+
+        std::array<int, N_COL> col_count;
 
         bool red_turn = false;
         bool red_first = false;

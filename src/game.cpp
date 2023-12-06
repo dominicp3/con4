@@ -7,7 +7,7 @@
 
 void game::play(bool cpu, int depth, bool player_red)
 {
-        if (depth <= 0) {
+        if (cpu && depth <= 0) {
                 return;
         }
 

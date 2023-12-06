@@ -1,12 +1,16 @@
 CXX=clang++
 CXXFLAGS=-std=c++20 -O3 -Wall -Wextra -pedantic -Werror -Werror=vla -Wno-unused-variable
+SRC=src/board.cpp src/io.cpp src/game.cpp src/computer.cpp
 
 .PHONY: clean
 
-bin/cpu: test/cpu.cpp src/board.cpp src/io.cpp src/game.cpp src/computer.cpp bin/
+bin/cpu: test/cpu.cpp $(SRC) bin/
 	$(CXX) $(CXXFLAGS) -o $@ $< $(filter src/%.cpp, $^)
 
-bin/test: test/test.cpp src/board.cpp src/io.cpp src/game.cpp src/computer.cpp bin/
+bin/test: test/test.cpp $(SRC) bin/
+	$(CXX) $(CXXFLAGS) -o $@ $< $(filter src/%.cpp, $^)
+
+bin/pvp: test/pvp.cpp $(SRC) bin/
 	$(CXX) $(CXXFLAGS) -o $@ $< $(filter src/%.cpp, $^)
 
 obj/board.o: src/board.cpp src/board.hpp obj/
