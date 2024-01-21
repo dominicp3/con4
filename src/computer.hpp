@@ -2,6 +2,7 @@
 #define COMPUTER_H
 
 #include "board.hpp"
+#include <limits>
 #include <vector>
 #include <array>
 
